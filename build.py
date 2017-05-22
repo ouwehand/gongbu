@@ -14,4 +14,7 @@ default_task = "publish"
 
 @init
 def set_properties(project):
-    pass
+    project.build_depends_on('sqlite3')
+    project.build_depends_on('random')
+    project.build_depends_on('abc')
+    project.build_depends_on('argparse')
