@@ -16,7 +16,7 @@ class TestGenWordlist(unittest.TestCase):
         expected = [
                 ('ANY_KOREAN_WORD_1',
                     ['ANY_ENGLISH_WORD_1', 'ANY_ENGLISH_WORD_3']),
-                ('ANY_KOREAN_WORD_1',
+                ('ANY_KOREAN_WORD_2',
                     ['ANY_ENGLISH_WORD_2'])]
         received = gongbu.collect_homonyms(defn_dict)
         self.assertEqual(received, expected)
