@@ -1,7 +1,6 @@
 import unittest
 import unittest.mock as mock
 import gongbu
-from collections import namedtuple
 import sqlite3
 
 
