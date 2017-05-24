@@ -5,6 +5,54 @@ from collections import namedtuple
 import sqlite3
 
 
+class TestLabel(unittest.TestCase):
+
+    def setUp(self):
+        self.label = gongbu.Label('ANY_ID', 'ANY_DESC')
+
+    def test_should_initialize_label_and_decr(self):
+        self.assertEqual(self.label.label_ID, ('ANY_ID',))
+        self.assertEqual(self.label.description, 'ANY_DESC')
+
+    @mock.patch('sqlite3.connect')
+    def test_should_execute_instruction_and_return_fetchall(self, mock_conn):
+
+        self.label.instruction = 'ANY_INST'
+        conn = sqlite3.connect('ANY_DB')
+        cursor = conn.cursor()
+        cursor.fetchall.return_value = 'ANY_FETCH'
+
+        received = self.label.get_words(cursor)
+
+        cursor.execute.assert_called_once_with('ANY_INST', ('ANY_ID',))
+        cursor.fetchall.assert_called_once_with()
+        self.assertEqual(received, 'ANY_FETCH')
+
+
+class TestState(unittest.TestCase):
+
+    def setUp(self):
+        self.state = gongbu.State('ANY_ID', 'ANY_DESC')
+
+    def test_should_initialize_label_and_decr(self):
+        self.assertEqual(self.state.state_ID, ('ANY_ID',))
+        self.assertEqual(self.state.description, 'ANY_DESC')
+
+    @mock.patch('sqlite3.connect')
+    def test_should_execute_instruction_and_return_fetchall(self, mock_conn):
+
+        self.state.instruction = 'ANY_INST'
+        conn = sqlite3.connect('ANY_DB')
+        cursor = conn.cursor()
+        cursor.fetchall.return_value = 'ANY_FETCH'
+
+        received = self.state.get_words(cursor)
+
+        cursor.execute.assert_called_once_with('ANY_INST', ('ANY_ID',))
+        cursor.fetchall.assert_called_once_with()
+        self.assertEqual(received, 'ANY_FETCH')
+
+
 class TestGenWordlist(unittest.TestCase):
 
     def test_collect_homonyms(self):
