@@ -39,7 +39,6 @@ class TestState(unittest.TestCase):
 
     @mock.patch('sqlite3.connect')
     def test_should_execute_instruction_and_return_fetchall(self, mock_conn):
-
         self.state.instruction = 'ANY_INST'
         conn = sqlite3.connect('ANY_DB')
         cursor = conn.cursor()
@@ -48,7 +47,7 @@ class TestState(unittest.TestCase):
         received = self.state.get_words(cursor)
 
         cursor.execute.assert_called_once_with('ANY_INST', ('ANY_ID',))
-        cursor.fetchall.assert_called_once_with()
+        cursor.fetchall.assert_called_once()
         self.assertEqual(received, 'ANY_FETCH')
 
 
@@ -68,14 +67,42 @@ class TestGenWordlist(unittest.TestCase):
         received = gongbu.collect_homonyms(defn_dict).sort()
         self.assertEqual(received, expected)
 
+    @mock.patch('sqlite3.connect')
+    def setUp(self, mock_conn):
+        conn = sqlite3.connect('ANY_DB')
+        self.mock_cursor = conn.cursor()
+
     def test_active_categories_empty_e2k_true(self):
-        mock_cursor = mock.Mock()
-        mock_cursor.fetchall.return_value = [
+        self.mock_cursor.fetchall.return_value = [
                 (1, 'ANY_KOREAN_WORD_1', 'ANY_ENGLISH_WORD_1'),
                 (2, 'ANY_KOREAN_WORD_2', 'ANY_ENGLISH_WORD_2')]
 
         expected = [('ANY_ENGLISH_WORD_1', ['ANY_KOREAN_WORD_1']),
-                    ('ANY_ENGLISH_WORD_2', ['ANY_KOREAN_WORD_2'])]
+                    ('ANY_ENGLISH_WORD_2', ['ANY_KOREAN_WORD_2'])].sort()
 
-        received = gongbu.generate_wordlist(mock_cursor, set(), True)
+        received = gongbu.generate_wordlist(self.mock_cursor,
+                                            set(), True).sort()
+        self.assertEqual(received, expected)
+
+    def test_active_categories_nonempty_e2k_true(self):
+        active_category_1 = mock.Mock()
+        active_category_1.get_words.return_value = [
+                (1, 'ANY_KOREAN_WORD_1', 'ANY_ENGLISH_WORD_1'),
+                (2, 'ANY_KOREAN_WORD_2', 'ANY_ENGLISH_WORD_2')]
+
+        active_category_2 = mock.Mock()
+        active_category_2.get_words.return_value = [
+                (1, 'ANY_KOREAN_WORD_1', 'ANY_ENGLISH_WORD_1'),
+                (3, 'ANY_KOREAN_WORD_3', 'ANY_ENGLISH_WORD_3')]
+
+        active_categories = set()
+        active_categories.add(active_category_1)
+        active_categories.add(active_category_2)
+
+        expected = [('ANY_ENGLISH_WORD_1', ['ANY_KOREAN_WORD_1']),
+                    ('ANY_ENGLISH_WORD_2', ['ANY_KOREAN_WORD_2']),
+                    ('ANY_ENGLISH_WORD_3', ['ANY_KOREAN_WORD_3'])].sort()
+
+        received = gongbu.generate_wordlist(self.mock_cursor,
+                                            active_categories, True).sort()
         self.assertEqual(received, expected)

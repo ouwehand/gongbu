@@ -78,12 +78,12 @@ def generate_wordlist(cursor, active_categories, english_to_korean=False):
     # Empty set of active categories means that we get *all* the words
 
     if len(active_categories) == 0:
-        cursor.execute('select * from Definitions')
+        cursor.execute('SELECT * FROM definitions')
         for v in cursor.fetchall():
             defn_dict[v[0]] = (v[1], v[2])
     else:
         for s in active_categories:
-            for v in s.getWords(cursor):
+            for v in s.get_words(cursor):
                 defn_dict[v[0]] = (v[1], v[2])
 
     if english_to_korean:
