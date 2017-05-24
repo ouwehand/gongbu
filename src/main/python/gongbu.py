@@ -105,3 +105,37 @@ def collect_homonyms(defn_dict):
 
     return [(korean_word, korean_dict[korean_word])
             for korean_word in korean_dict]
+
+
+class InitializeData():
+
+    def __init__(self):
+        self.wordlist = []
+        self.categories = []
+        self.activeCategories = set()
+        self.english_to_korean = False
+        self.db_name = 'gongbu.db'
+
+    def __enter__(self):
+        random.seed()
+       
+        self.conn = sqlite3.connect(self.db_name)
+        self.cursor = self.conn.cursor()
+
+        # Fetch all available categories (which is constant for the duration of the program)
+        self.cursor.execute("SELECT * FROM label_descriptions")
+
+        for l in self.cursor.fetchall():
+            self.categories.append(Label(l[0], l[1]))
+
+        self.cursor.execute("SELECT * FROM state_descriptions")
+
+        for s in self.cursor.fetchall():
+            self.categories.append(State(s[0], s[1]))
+
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.cursor.close()
+        self.conn.commit()
+        self.conn.close()
