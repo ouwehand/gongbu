@@ -14,11 +14,6 @@ class Category(metaclass=ABCMeta):
     def description(self):
         pass
 
-    @description.setter
-    @abstractmethod
-    def description(self, value):
-        pass
-
     @abstractmethod
     def get_words(self, cursor):
         pass
@@ -27,46 +22,38 @@ class Category(metaclass=ABCMeta):
 class Label(Category):
 
     def __init__(self, label_ID, description):
-        self.label_ID = (label_ID,)
-        self.description = description
-        self.instruction = ('SELECT definitions.defnID, korean, english'
-                            ' FROM definitions INNER JOIN labels'
-                            ' ON labels.defnID = definitions.defnID'
-                            ' WHERE lblID = ?')
+        self.__label_ID = (label_ID,)
+        self.__description = description
+        self.__instruction = ('SELECT definitions.defnID, korean, english'
+                              ' FROM definitions INNER JOIN labels'
+                              ' ON labels.defnID = definitions.defnID'
+                              ' WHERE lblID = ?')
 
     @property
     def description(self):
         return self.__description
 
-    @description.setter
-    def description(self, value):
-        self.__description = value
-
     def get_words(self, cursor):
-        cursor.execute(self.instruction, self.label_ID)
+        cursor.execute(self.__instruction, self.__label_ID)
         return cursor.fetchall()
 
 
 class State(Category):
 
     def __init__(self, state_ID, description):
-        self.state_ID = (state_ID,)
-        self.description = description
-        self.instruction = ('SELECT DISTINCT definitions.defnID, korean, english'
-                            ' FROM definitions INNER JOIN properties'
-                            ' ON properties.defnID = definitions.defnID'
-                            ' WHERE StateID = ?')
+        self.__state_ID = (state_ID,)
+        self.__description = description
+        self.__instruction = ('SELECT DISTINCT definitions.defnID, korean, english'
+                              ' FROM definitions INNER JOIN properties'
+                              ' ON properties.defnID = definitions.defnID'
+                              ' WHERE StateID = ?')
 
     @property
     def description(self):
         return self.__description
 
-    @description.setter
-    def description(self, value):
-        self.__description = value
-
     def get_words(self, cursor):
-        cursor.execute(self.instruction, self.state_ID)
+        cursor.execute(self.__instruction, self.__state_ID)
         return cursor.fetchall()
 
 

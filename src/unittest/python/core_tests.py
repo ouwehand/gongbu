@@ -9,13 +9,12 @@ class TestLabel(unittest.TestCase):
     def setUp(self):
         self.label = gongbu.Label('ANY_ID', 'ANY_DESC')
 
-    def test_should_initialize_label_and_decr(self):
-        self.assertEqual(self.label.label_ID, ('ANY_ID',))
+    def test_property_description(self):
         self.assertEqual(self.label.description, 'ANY_DESC')
 
     @mock.patch('sqlite3.connect')
-    def test_should_execute_instruction_and_return_fetchall(self, mock_conn):
-        self.label.instruction = 'ANY_INST'
+    def test_get_words_database_execution(self, mock_conn):
+        self.label._Label__instruction = 'ANY_INST'
         conn = sqlite3.connect('ANY_DB')
         cursor = conn.cursor()
         cursor.fetchall.return_value = 'ANY_FETCH'
@@ -32,13 +31,12 @@ class TestState(unittest.TestCase):
     def setUp(self):
         self.state = gongbu.State('ANY_ID', 'ANY_DESC')
 
-    def test_should_initialize_label_and_decr(self):
-        self.assertEqual(self.state.state_ID, ('ANY_ID',))
+    def test_property_description(self):
         self.assertEqual(self.state.description, 'ANY_DESC')
 
     @mock.patch('sqlite3.connect')
-    def test_should_execute_instruction_and_return_fetchall(self, mock_conn):
-        self.state.instruction = 'ANY_INST'
+    def test_get_words_database_execution(self, mock_conn):
+        self.state._State__instruction = 'ANY_INST'
         conn = sqlite3.connect('ANY_DB')
         cursor = conn.cursor()
         cursor.fetchall.return_value = 'ANY_FETCH'
