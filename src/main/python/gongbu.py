@@ -94,35 +94,76 @@ def collect_homonyms(defn_dict):
             for korean_word in korean_dict]
 
 
-class InitializeData():
+class DatabaseConnection():
 
-    def __init__(self):
-        self.wordlist = []
-        self.categories = []
-        self.activeCategories = set()
-        self.english_to_korean = False
-        self.db_name = 'gongbu.db'
+    def __init__(self, db_name):
+        self.__db_name = db_name
+        self.__cursor = None
+
+    @property
+    def cursor(self):
+        return self.__cursor
 
     def __enter__(self):
-        random.seed()
-       
-        self.conn = sqlite3.connect(self.db_name)
-        self.cursor = self.conn.cursor()
-
-        # Fetch all available categories (which is constant for the duration of the program)
-        self.cursor.execute("SELECT * FROM label_descriptions")
-
-        for l in self.cursor.fetchall():
-            self.categories.append(Label(l[0], l[1]))
-
-        self.cursor.execute("SELECT * FROM state_descriptions")
-
-        for s in self.cursor.fetchall():
-            self.categories.append(State(s[0], s[1]))
-
+        self.__connection = sqlite3.connect(self.__db_name)
+        self.__cursor = self.__connection.cursor()
         return self
 
     def __exit__(self, type, value, traceback):
         self.cursor.close()
-        self.conn.commit()
-        self.conn.close()
+        self.__connection.commit()
+        self.__connection.close()
+
+
+class WordData():
+
+    def __init__(self, database_connection):
+        self.__wordlist = []
+        self.__categories = []
+        self.__active_categories = set()
+        self.__english_to_korean = False
+        self.__cursor = database_connection.cursor
+
+        random.seed()
+
+        # Fetch all available categories (which is constant for the duration of the program)
+        self.__cursor.execute('SELECT * FROM label_descriptions')
+
+        for l in self.__cursor.fetchall():
+            self.__categories.append(Label(l[0], l[1]))
+
+        self.__cursor.execute('SELECT * FROM state_descriptions')
+
+        for s in self.__cursor.fetchall():
+            self.__categories.append(State(s[0], s[1]))
+
+    @property
+    def categories(self):
+        return self.__categories.copy()
+
+    @property
+    def active_categories(self):
+        return self.__active_categories.copy()
+
+    @active_categories.setter
+    def active_categories(self, new_active_categories):
+        self.__active_categories = new_active_categories
+        self.__wordlist = generate_wordlist(self.__cursor,
+                                            new_active_categories,
+                                            self.english_to_korean)
+
+    @property
+    def english_to_korean(self):
+        return self.english_to_korean
+
+    @english_to_korean.setter
+    def english_to_korean(self, new_english_to_korean):
+        self.english_to_korean = new_english_to_korean
+        self.__wordlist = generate_wordlist(self.__cursor,
+                                            self.__active_categories,
+                                            new_english_to_korean)
+
+    def get_definition(self):
+        i = random.randrange(0, len(self.__wordlist))
+        word, definitions = self.__wordlist[i]
+        return word, "; ".join(definitions)

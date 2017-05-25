@@ -145,12 +145,11 @@ class TestGenWordlist(unittest.TestCase):
         mock_homonyms.assert_called_once_with(intermediate)
 
 
-class TestInitializeData(unittest.TestCase):
+class TestDatabaseConnection(unittest.TestCase):
 
     @mock.patch('sqlite3.connect')
     def test_databse_setup_release(self, mock_conn):
-        data_init = gongbu.InitializeData()
-        data_init.db_name = 'ANY_NAME'
+        data_init = gongbu.DatabaseConnection('ANY_NAME')
 
         mock_connection = sqlite3.connect.return_value
         mock_cursor = mock_connection.cursor.return_value
