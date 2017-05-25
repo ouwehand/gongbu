@@ -118,7 +118,6 @@ class DatabaseConnection():
 class WordData():
 
     def __init__(self, database_connection):
-        self.__wordlist = []
         self.__categories = []
         self.__active_categories = set()
         self.__english_to_korean = False
@@ -137,6 +136,11 @@ class WordData():
         for s in self.__cursor.fetchall():
             self.__categories.append(State(s[0], s[1]))
 
+        # Initialize a wordlist for the default settings
+        self.__wordlist = generate_wordlist(self.__cursor,
+                                            self.__active_categories,
+                                            self.__english_to_korean)
+
     @property
     def categories(self):
         return self.__categories.copy()
@@ -147,21 +151,23 @@ class WordData():
 
     @active_categories.setter
     def active_categories(self, new_active_categories):
-        self.__active_categories = new_active_categories
-        self.__wordlist = generate_wordlist(self.__cursor,
-                                            new_active_categories,
-                                            self.english_to_korean)
+        if new_active_categories != self.__active_categories:
+            self.__active_categories = new_active_categories
+            self.__wordlist = generate_wordlist(self.__cursor,
+                                                new_active_categories,
+                                                self.english_to_korean)
 
     @property
     def english_to_korean(self):
-        return self.english_to_korean
+        return self.__english_to_korean
 
     @english_to_korean.setter
     def english_to_korean(self, new_english_to_korean):
-        self.english_to_korean = new_english_to_korean
-        self.__wordlist = generate_wordlist(self.__cursor,
-                                            self.__active_categories,
-                                            new_english_to_korean)
+        if new_english_to_korean != self.english_to_korean:
+            self.__english_to_korean = new_english_to_korean
+            self.__wordlist = generate_wordlist(self.__cursor,
+                                                self.__active_categories,
+                                                new_english_to_korean)
 
     def get_definition(self):
         i = random.randrange(0, len(self.__wordlist))
