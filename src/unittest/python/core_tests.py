@@ -166,22 +166,19 @@ class TestDatabaseConnection(unittest.TestCase):
 
 class TestWordData(unittest.TestCase):
 
-        @mock.patch('gongbu.generate_wordlist')
         @mock.patch('sqlite3.connect')
-        def setUp(self, mock_conn, mock_genword):
+        def setUp(self, mock_conn):
             with gongbu.DatabaseConnection('ANY_DB') as db_connection:
                 cursor = db_connection.cursor
                 cursor.fetchall.return_value = [['ANY_ID', 'ANY_DESCRIPTION']]
-                mock_genword.return_value = [('ANY_WORD', ['ANY_DEFN_1', 'ANY_DEFN_2'])]
                 self.word_data = gongbu.WordData(db_connection)
-                self.mock_genword_firstrun = mock_genword
 
-        def test_init_generates_wordlist(self):
-            self.mock_genword_firstrun.assert_called_once()
-
-        def test_get_definition(self):
+        @mock.patch('gongbu.generate_wordlist')
+        def test_get_definition(self, mock_genword):
+            mock_genword.return_value = [('ANY_WORD', ['ANY_DEFN_1', 'ANY_DEFN_2'])]
             expected = 'ANY_WORD', 'ANY_DEFN_1; ANY_DEFN_2'
             self.assertEqual(self.word_data.get_definition(), expected)
+            mock_genword.assert_called_once()
 
         def test_property_categories(self):
             description_list = [c.description for c in self.word_data.categories]
@@ -189,15 +186,19 @@ class TestWordData(unittest.TestCase):
 
         @mock.patch('gongbu.generate_wordlist')
         def test_active_categories_setter(self, mock_genword):
+            mock_genword.return_value = [('ANY_WORD', ['ANY_DEFN_1', 'ANY_DEFN_2'])]
             new_active = set()
             cat = self.word_data.categories[0]
             new_active.add(cat)
             self.word_data.active_categories = new_active
             self.assertEqual(self.word_data.active_categories, new_active)
+            self.word_data.get_definition()
             mock_genword.assert_called_once()
 
         @mock.patch('gongbu.generate_wordlist')
         def test_english_to_korean_setter(self, mock_genword):
+            mock_genword.return_value = [('ANY_WORD', ['ANY_DEFN_1', 'ANY_DEFN_2'])]
             self.word_data.english_to_korean = True
             self.assertEqual(self.word_data.english_to_korean, True)
+            self.word_data.get_definition()
             mock_genword.assert_called_once() 
