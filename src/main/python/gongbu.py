@@ -174,3 +174,68 @@ class WordData():
         i = random.randrange(0, len(self.__wordlist))
         word, definitions = self.__wordlist[i]
         return word, "; ".join(definitions)
+
+
+def gongbu_cli():
+
+    import argparse
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-f',
+                        '--filter',
+                        dest='filter_by_category',
+                        action='store_true',
+                        help=('start with a menu that lets you '
+                              'filter words by category'))
+
+    parser.add_argument('-e2k',
+                        '--english_to_korean',
+                        action='store_true',
+                        help=('translate from English to Korean, '
+                              'rather than the other way around'))
+
+    args = parser.parse_args()
+
+    with DatabaseConnection('gongbu.db') as db_connection:
+
+        word_data = WordData(db_connection)
+        categories = word_data.categories
+        active_categories = set()
+
+        # Define the active categories
+        if args.filter_by_category:
+            for i, category in enumerate(categories):
+                print("{}: {}".format(i+1, category.description))
+
+            while True:
+                input_str = input(('\nPlease enter a category number, '
+                                   'or zero to finish'))
+
+                if input_str.isdigit():
+                    num = int(input_str)
+
+                    if num > 0 and num <= len(categories):
+                        active_categories.add(categories[num-1])
+                    if num == 0:
+                        break
+
+        # Pass settings to word_data object
+        word_data.active_categories = active_categories
+        word_data.english_to_korean = args.english_to_korean
+
+        # Main loop
+        while True:
+            word, definition = word_data.get_definition()
+            print(word)
+            key = input("Press enter to see answer, 'x' to quit")
+            print(definition)
+            print("--------------------")
+
+            if key == 'x':
+                break
+
+
+if __name__ == "__main__":
+    gongbu_cli()
