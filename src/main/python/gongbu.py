@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import random
 import sqlite3
 from abc import ABCMeta, abstractmethod
@@ -235,7 +233,3 @@ def gongbu_cli():
 
             if key == 'x':
                 break
-
-
-if __name__ == "__main__":
-    gongbu_cli()
