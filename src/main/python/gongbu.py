@@ -211,7 +211,7 @@ def gongbu_cli():
 
             while True:
                 input_str = input(('\nPlease enter a category number, '
-                                   'or zero to finish'))
+                                   'or zero to finish '))
 
                 if input_str.isdigit():
                     num = int(input_str)
@@ -229,7 +229,7 @@ def gongbu_cli():
         while True:
             word, definition = word_data.get_definition()
             print(word)
-            key = input("Press enter to see answer, 'x' to quit")
+            key = input("Press enter to see answer, 'x' to quit ")
             print(definition)
             print("--------------------")
 
