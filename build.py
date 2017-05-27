@@ -8,6 +8,7 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 
 
+requires_python = ">=3.4"
 name = "gongbu"
 default_task = "publish"
 
