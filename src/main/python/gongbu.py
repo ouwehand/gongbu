@@ -181,6 +181,11 @@ def gongbu_cli():
     # Parse command-line arguments
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('db_file',
+                        type=str,
+                        help='database file',
+                        metavar='FILENAME')
+
     parser.add_argument('-f',
                         '--filter',
                         dest='filter_by_category',
@@ -196,7 +201,7 @@ def gongbu_cli():
 
     args = parser.parse_args()
 
-    with DatabaseConnection('gongbu.db') as db_connection:
+    with DatabaseConnection(args.db_file) as db_connection:
 
         word_data = WordData(db_connection)
         categories = word_data.categories
