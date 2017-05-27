@@ -1,5 +1,5 @@
 .mode column
-pragma foreign_keys = 1;
+PRAGMA foreign_keys = 1;
 
 --Contains Korean words and English translations
 
