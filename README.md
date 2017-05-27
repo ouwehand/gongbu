@@ -28,19 +28,15 @@ The currently built-in labels and properties are:
 
 ## Installation
 
-Get pybuilder first, if it's not installed already:
-
-`pip install pybuilder`
-
 Then to install the script called 'gongbu':
 
-`pyb -X`
-
-`pip install target/dist/gongbu-<version>/dist/gongbu-<version>.tar.gz`
+        $ git clone https://github.com/ouwehand/gongbu.git
+        $ cd gongbu
+        $ python3 setup.py install
 
 Create a database file (need to have sqlite3 installed):
 
-`./src/sql/database_setup.sh`
+        $ ./src/sql/database_setup.sh
 
 If you want a minimal database setup, without any words, then use the script `./src/sql/database_setup.sql`.
 
@@ -48,7 +44,7 @@ If you want a minimal database setup, without any words, then use the script `./
 
 You need to pass the 'gongbu' script a local database file as argument, e.g.:
 
-`gongbu gongbu.db`
+        $ gongbu gongbu.db
 
 For other command-line options, type: `gongbu -h`.
 
