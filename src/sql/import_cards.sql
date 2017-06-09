@@ -37,12 +37,12 @@ DROP TABLE raw_data;
 --Assign a few labels and properties, only for demonstration purposes
 --The labels/properties in the current database are by no means complete
 
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to write";
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to read";
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to listen";
+INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to write"
+                                                                        OR english="to read"
+                                                                        OR english="to listen";
 
-INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="spicy";
-INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="to listen";
+INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="spicy"
+                                                                                         OR english="to listen";
 
 INSERT INTO definitions (korean, english) VALUES ("입다", "to wear");
 INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 1 FROM definitions WHERE english="to wear";
