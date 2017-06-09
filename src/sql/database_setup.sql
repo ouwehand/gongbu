@@ -15,6 +15,8 @@
 */
 
 
+BEGIN TRANSACTION;
+
 .mode column
 PRAGMA foreign_keys = 1;
 
@@ -90,3 +92,5 @@ CREATE TABLE properties(
 	FOREIGN KEY (defnID) REFERENCES definitions (defnID),
 	FOREIGN KEY (propID, stateID) REFERENCES property_definitions (propID, stateID)
 );
+
+COMMIT;

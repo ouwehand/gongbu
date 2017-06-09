@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 .mode csv
 
 CREATE TABLE raw_data (
@@ -65,3 +67,5 @@ INSERT INTO definitions (korean, english) VALUES ("차 / 자동차", "car");
 
 INSERT INTO definitions (korean, english) VALUES ("쓰다", "to wear something on the head (hat or glasses)");
 INSERT INTO definitions (korean, english) VALUES ("쓰다", "bitter");
+
+COMMIT;
