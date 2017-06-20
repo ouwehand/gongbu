@@ -28,17 +28,19 @@ The currently built-in labels and properties are:
 
 ## Installation
 
-Then to install the script called 'gongbu':
+To install the script called 'gongbu':
 
         $ git clone https://github.com/ouwehand/gongbu.git
         $ cd gongbu
         $ python3 setup.py install
 
-Create a database file (need to have sqlite3 installed):
+To create a database file (need to have sqlite3 installed):
 
         $ ./src/sql/database_setup.sh
 
-If you want a minimal database setup, without any words, then use the script `./src/sql/database_setup.sql`.
+If you want a minimal database setup, without any words, then use:
+
+        $ sqlite3 -batch gongbu.db < ./src/sql/database_setup.sql
 
 ## Usage
 

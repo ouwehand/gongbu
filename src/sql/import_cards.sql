@@ -1,3 +1,5 @@
+BEGIN TRANSACTION;
+
 .mode csv
 
 CREATE TABLE raw_data (
@@ -35,12 +37,12 @@ DROP TABLE raw_data;
 --Assign a few labels and properties, only for demonstration purposes
 --The labels/properties in the current database are by no means complete
 
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to write";
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to read";
-INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to listen";
+INSERT INTO labels (defnID, lblID) SELECT defnID, 1 FROM definitions WHERE english="to write"
+                                                                        OR english="to read"
+                                                                        OR english="to listen";
 
-INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="spicy";
-INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="to listen";
+INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 2 FROM definitions WHERE english="spicy"
+                                                                                         OR english="to listen";
 
 INSERT INTO definitions (korean, english) VALUES ("입다", "to wear");
 INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 1 FROM definitions WHERE english="to wear";
@@ -48,20 +50,22 @@ INSERT INTO properties (defnID, propID, stateID) SELECT defnID, 1, 1 FROM defini
 --De-couple a few Korean homonyms
 
 DELETE FROM definitions WHERE korean="밤";
-INSERT INTO definitions (korean, english) VALUES ("밤", "night");
-INSERT INTO definitions (korean, english) VALUES ("밤", "chestnut");
+INSERT INTO definitions (korean, english) VALUES ("밤", "night"),
+                                                 ("밤", "chestnut");
 
 DELETE FROM definitions WHERE korean="병";
-INSERT INTO definitions (korean, english) VALUES ("병", "bottle");
-INSERT INTO definitions (korean, english) VALUES ("병", "illness");
+INSERT INTO definitions (korean, english) VALUES ("병", "bottle"),
+                                                 ("병", "illness");
 
 --Not a true homonym, but an abbreviation
 
 DELETE FROM definitions WHERE korean="차";
-INSERT INTO definitions (korean, english) VALUES ("차", "tea");
-INSERT INTO definitions (korean, english) VALUES ("차 / 자동차", "car");
+INSERT INTO definitions (korean, english) VALUES ("차", "tea"),
+                                                 ("차 / 자동차", "car");
 
 --Add a few more Korean homonyms
 
-INSERT INTO definitions (korean, english) VALUES ("쓰다", "to wear something on the head (hat or glasses)");
-INSERT INTO definitions (korean, english) VALUES ("쓰다", "bitter");
+INSERT INTO definitions (korean, english) VALUES ("쓰다", "to wear something on the head (hat or glasses)"),
+                                                 ("쓰다", "bitter");
+
+COMMIT;
